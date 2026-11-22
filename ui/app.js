@@ -41,6 +41,19 @@ const P = {
   ban:'<circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/>',
   disk:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 15h.01M11 15h6"/>',
   usb:'<path d="M9 3h6v6H9zM7 9h10v8a5 5 0 0 1-10 0z"/>',
+  wifi:'<path d="M2 9a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0M12 19.5h.01"/>',
+  gamepad:'<path d="M7 8h10a5 5 0 0 1 4.8 6.4l-.6 2A3 3 0 0 1 16.4 18L15 16H9l-1.4 2a3 3 0 0 1-4.8-1.6l-.6-2A5 5 0 0 1 7 8z"/><path d="M7.5 11v3M6 12.5h3M15 12h.01M17.5 13.5h.01"/>',
+  sparkles:'<path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/>',
+  pie:'<path d="M21 12A9 9 0 1 1 12 3v9z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15z"/>',
+  power:'<path d="M12 3v9M6.4 6.4a8 8 0 1 0 11.2 0"/>',
+  package:'<path d="m12 3 8 4.5v9L12 21l-8-4.5v-9z"/><path d="m4 7.5 8 4.5 8-4.5M12 12v9"/>',
+  edit:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m14 6 4 4"/>',
+  monitor:'<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',
+  down:'<path d="M12 4v14M6 12l6 6 6-6"/>',
+  up:'<path d="M12 20V6M6 12l6-6 6 6"/>',
+  undo:'<path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/>',
+  thermo:'<path d="M14 14.8V5a2 2 0 0 0-4 0v9.8a4 4 0 1 0 4 0z"/>',
+  fan:'<circle cx="12" cy="12" r="2"/><path d="M12 10c0-4 1-7 4-7s3 4-2 7M14 12c4 0 7 1 7 4s-4 3-7-2M12 14c0 4-1 7-4 7s-3-4 2-7M10 12c-4 0-7-1-7-4s4-3 7 2"/>',
 };
 const ic = (n, cls='') => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${P[n]||''}</svg>`;
 function paintIcons(root=document){ root.querySelectorAll('i[data-ic]').forEach(el => { el.outerHTML = ic(el.dataset.ic); }); }
@@ -106,6 +119,7 @@ async function copyText(t, msg){
 let CFG = {confirmKill:true, includeHeavy:false, heavyMB:400, refresh:3, exclusions:[], alwaysClose:[]};
 let STATUS = {admin:false};
 let page = 'overview';
+const PAGES = {}; // ganchos de las secciones: enter(), poll(), interval
 
 async function loadConfig(){ try{ CFG = await api('config'); }catch(e){} applySettingsUI(); }
 async function saveConfig(){ try{ const {search, ...c} = CFG; CFG = await api('config', c); }catch(e){ toast('No se pudieron guardar los ajustes', 'bad'); } }
@@ -123,7 +137,10 @@ async function loadStatus(){
 // ---------------------------------------------------------------- navegación
 function go(p){
   if (!$('#p-' + p)) return;
+  const prev = page;
   page = p;
+  if (prev !== p && PAGES[prev]?.leave) try{ PAGES[prev].leave(); }catch(e){}
+  if (PAGES[p]?.enter) try{ PAGES[p].enter(); }catch(e){ console.error(e); }
   $$('.nav').forEach(n => n.classList.toggle('on', n.dataset.page === p));
   $$('.page').forEach(s => s.classList.toggle('on', s.id === 'p-' + p));
   schedule(true);
@@ -142,10 +159,12 @@ function schedule(now){
     try{
       if (page === 'overview') await refreshOverview();
       else if (page === 'processes' && !pPaused && !modalOpen) await refreshProcesses();
+      else if (PAGES[page]?.poll && !modalOpen) await PAGES[page].poll();
     }catch(e){}
-    if (!document.hidden && (page === 'overview' || page === 'processes')) pollTimer = setTimeout(run, (CFG.refresh||3) * 1000);
+    const iv = PAGES[page]?.interval ?? (CFG.refresh||3) * 1000;
+    if (!document.hidden && (page === 'overview' || page === 'processes' || PAGES[page]?.poll)) pollTimer = setTimeout(run, iv);
   };
-  if (now) run(); else pollTimer = setTimeout(run, (CFG.refresh||3) * 1000);
+  if (now) run(); else pollTimer = setTimeout(run, PAGES[page]?.interval ?? (CFG.refresh||3) * 1000);
 }
 document.addEventListener('visibilitychange', () => schedule(true));
 
@@ -758,6 +777,8 @@ function applySettingsUI(){
   $('#sHeavy').checked = !!CFG.includeHeavy;
   $('#sHeavyMB').value = CFG.heavyMB || 400;
   $('#sRefresh').value = String(CFG.refresh || 3);
+  $('#sAutoUpd').checked = CFG.autoUpdate !== false;
+  $('#sLhmPort').value = CFG.lhmPort || 8085;
   const tags = (list, el) => { el.innerHTML = (CFG[list]||[]).length ? CFG[list].map((x,i) => `<span class="tag">${esc(x)}<button data-rm="${list}:${i}" title="Quitar">${ic('x')}</button></span>`).join('') : '<span class="faint" style="font-size:12.5px">Ninguno</span>'; };
   tags('exclusions', $('#tagsExcl')); tags('alwaysClose', $('#tagsAlways'));
 }
@@ -765,6 +786,8 @@ $('#sConfirm').onchange = e => { CFG.confirmKill = e.target.checked; saveConfig(
 $('#sHeavy').onchange = e => { CFG.includeHeavy = e.target.checked; saveConfig(); };
 $('#sHeavyMB').onchange = e => { CFG.heavyMB = Math.max(50, +e.target.value || 400); saveConfig(); };
 $('#sRefresh').onchange = e => { CFG.refresh = +e.target.value; saveConfig(); };
+$('#sAutoUpd').onchange = e => { CFG.autoUpdate = e.target.checked; saveConfig(); };
+$('#sLhmPort').onchange = e => { CFG.lhmPort = Math.min(65535, Math.max(1, +e.target.value || 8085)); saveConfig(); };
 $('#p-settings').addEventListener('click', async e => {
   const b = e.target.closest('[data-rm]'); if (!b) return;
   const [list, i] = b.dataset.rm.split(':'); CFG[list].splice(+i, 1); await saveConfig(); applySettingsUI();
@@ -809,6 +832,12 @@ document.addEventListener('keydown', e => {
     ensureVisible(selIdx); vpaint();
   }
   if (e.key === 'Enter' && selIdx >= 0) act('open', all[view[selIdx]]);
+});
+
+// enlaces externos: se abren en el navegador predeterminado
+document.addEventListener('click', e => {
+  const a = e.target.closest('a[href^="https://"]'); if (!a) return;
+  e.preventDefault(); api('openurl', {url: a.href}).catch(() => {});
 });
 
 // ---------------------------------------------------------------- inicio

@@ -14,15 +14,30 @@
     <div class="mark"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M3.5 5h4l4.5 11.5L16.5 5h4L14 20h-4z" fill="#fff"/></svg></div>
     <div><b>Vantix</b><small>Utilities</small></div>
   </div>
-  <div class="navlbl">Herramientas</div>
+  <nav class="navscroll">
+  <div class="navlbl">Rendimiento</div>
   <div class="nav on" data-page="overview"><i data-ic="grid"></i>Resumen</div>
   <div class="nav" data-page="processes"><i data-ic="activity"></i>Procesos</div>
+  <div class="nav" data-page="hardware"><i data-ic="cpu"></i>Hardware</div>
+  <div class="nav" data-page="network"><i data-ic="wifi"></i>Red</div>
+  <div class="nav" data-page="game"><i data-ic="gamepad"></i>Modo juego</div>
+  <div class="navlbl">Limpieza</div>
+  <div class="nav" data-page="cleaner"><i data-ic="sparkles"></i>Limpiador</div>
+  <div class="nav" data-page="space"><i data-ic="pie"></i>Espacio en disco</div>
+  <div class="nav" data-page="dupes"><i data-ic="copy"></i>Duplicados</div>
+  <div class="nav" data-page="startup"><i data-ic="power"></i>Programas de inicio</div>
+  <div class="nav" data-page="uninstall"><i data-ic="package"></i>Desinstalar programas</div>
+  <div class="navlbl">Archivos</div>
   <div class="nav" data-page="unlock"><i data-ic="unlock"></i>Eliminación forzada</div>
   <div class="nav" data-page="search"><i data-ic="search"></i>Búsqueda de archivos</div>
-  <div class="navlbl">Aplicación</div>
+  <div class="nav" data-page="rename"><i data-ic="edit"></i>Renombrar en masa</div>
+  <div class="navlbl">Sistema</div>
+  <div class="nav" data-page="sysinfo"><i data-ic="monitor"></i>Información del sistema</div>
   <div class="nav" data-page="guide"><i data-ic="book"></i>Guía de uso</div>
   <div class="nav" data-page="settings"><i data-ic="sliders"></i>Ajustes</div>
+  </nav>
   <div class="sidefoot">
+    <div class="updbox" id="updBox" style="display:none"><div><b id="updTitle">Nueva versión disponible</b><span id="updSub"></span></div><button class="btn sm primary block" id="updBtn"><i data-ic="download"></i>Actualizar ahora</button></div>
     <div class="priv" id="priv">
       <div class="row1"><span class="dot" id="privDot"></span><span id="privTitle">Comprobando…</span></div>
       <p id="privText"></p>
@@ -225,9 +240,20 @@
           <a data-s="g-overview">Resumen</a>
           <a data-s="g-processes">Procesos</a>
           <a data-s="g-clean">Limpieza recomendada</a>
+          <a data-s="g-hardware">Hardware</a>
+          <a data-s="g-network">Red</a>
+          <a data-s="g-game">Modo juego</a>
+          <a data-s="g-cleaner">Limpiador</a>
+          <a data-s="g-space">Espacio en disco</a>
+          <a data-s="g-dupes">Duplicados</a>
+          <a data-s="g-startup">Programas de inicio</a>
+          <a data-s="g-uninstall">Desinstalar programas</a>
           <a data-s="g-unlock">Eliminación forzada</a>
           <a data-s="g-search">Búsqueda de archivos</a>
+          <a data-s="g-rename">Renombrar en masa</a>
+          <a data-s="g-sysinfo">Información del sistema</a>
           <a data-s="g-admin">Modo administrador</a>
+          <a data-s="g-update">Actualizaciones</a>
           <a data-s="g-settings">Ajustes</a>
           <a data-s="g-privacy">Seguridad y privacidad</a>
           <a data-s="g-keys">Atajos de teclado</a>
@@ -236,8 +262,8 @@
         <div class="doc">
           <section id="g-intro">
             <h2><span class="gi"><i data-ic="info"></i></span>Introducción</h2>
-            <p><strong>Vantix Utilities</strong> reúne en una sola aplicación varias herramientas de mantenimiento para Windows: supervisar el equipo, cerrar procesos innecesarios, eliminar carpetas bloqueadas y buscar archivos en todo el ordenador.</p>
-            <p>Todo funciona en tu propio equipo, sin conexión a Internet y sin instalar nada. La aplicación consume muy pocos recursos: solo recoge datos de la sección que tienes abierta y deja de trabajar cuando la ventana está minimizada. Al cerrar la ventana, la aplicación se cierra por completo.</p>
+            <p><strong>Vantix Utilities</strong> reúne en una sola aplicación las herramientas de mantenimiento de Windows: supervisar el equipo y sus temperaturas, cerrar procesos innecesarios, controlar la red, preparar el PC para jugar, liberar espacio, desinstalar programas a fondo, gestionar el inicio, eliminar carpetas bloqueadas, buscar y renombrar archivos y consultar los componentes.</p>
+            <p>El menú lateral está agrupado en <strong>Rendimiento</strong>, <strong>Limpieza</strong>, <strong>Archivos</strong> y <strong>Sistema</strong>. Todo funciona en tu propio equipo y sin instalar nada (solo se conecta a GitHub para buscar actualizaciones). La aplicación consume muy pocos recursos: solo recoge datos de la sección que tienes abierta y deja de trabajar cuando la ventana está minimizada. Al cerrar la ventana, la aplicación se cierra por completo.</p>
           </section>
 
           <section id="g-overview">
@@ -288,6 +314,101 @@
             <div class="alert info"><i data-ic="info"></i><div>Algunos programas se vuelven a abrir solos al cabo de un tiempo (por ejemplo, los actualizadores programados). Es normal: es Windows u otro programa quien los inicia. Para evitarlo de forma permanente, desactívalos en <em>Configuración › Aplicaciones › Inicio</em>.</div></div>
           </section>
 
+
+          <section id="g-hardware">
+            <h2><span class="gi"><i data-ic="cpu"></i></span>Hardware</h2>
+            <p>Muestra en tiempo real el estado de cada componente:</p>
+            <ul>
+              <li><strong>Temperaturas destacadas</strong> arriba del todo, en verde (normal), naranja (≥ 70 °C) o rojo (≥ 85 °C).</li>
+              <li><strong>Procesador:</strong> uso total y por cada núcleo, frecuencia actual, caché, procesos, hilos e identificadores.</li>
+              <li><strong>Tarjeta gráfica:</strong> en tarjetas NVIDIA, uso, temperatura, VRAM ocupada, consumo en vatios, relojes y ventilador (mediante el controlador de NVIDIA). En otras tarjetas, uso por motor (3D, vídeo…) y memoria.</li>
+              <li><strong>Memoria RAM:</strong> reparto entre memoria en uso, modificada, en espera (caché) y libre, memoria comprometida y los <strong>módulos instalados</strong> (ranura, capacidad, tipo DDR, velocidad, fabricante y modelo).</li>
+              <li><strong>Almacenamiento:</strong> cada disco físico con su tipo (SSD/HDD, NVMe/SATA), temperatura si el disco la ofrece, actividad y velocidad de lectura/escritura.</li>
+              <li><strong>Liberar memoria en espera</strong> (administrador): vacía la caché de memoria para dejar más RAM libre.</li>
+            </ul>
+            <h4>Temperatura del procesador, placa base y ventiladores</h4>
+            <p>Windows no permite leer esos sensores sin un controlador especial. Vantix se integra con <strong>LibreHardwareMonitor</strong> (gratuito y de código abierto): ábrelo como administrador y activa <em>Options › Remote Web Server › Run</em>. Vantix lo detecta solo y muestra todos sus sensores (temperaturas, ventiladores, voltajes, consumo y frecuencias). El puerto se puede cambiar en Ajustes.</p>
+          </section>
+
+          <section id="g-network">
+            <h2><span class="gi"><i data-ic="wifi"></i></span>Red</h2>
+            <ul>
+              <li><strong>Descarga y subida</strong> actuales de todos los adaptadores, con gráfico de los últimos 2 minutos y el total desde que se encendió el equipo.</li>
+              <li><strong>Programas conectados:</strong> cada programa con sus conexiones activas y puertos abiertos. Haz clic para ver a qué direcciones se conecta.</li>
+              <li><strong>Tráfico por programa</strong> (velocidad y total enviado/recibido): Windows solo lo permite con permisos de administrador. Mide el tráfico TCP desde que abres la sección; el tráfico UDP (algunos juegos y llamadas) no se puede atribuir por programa.</li>
+              <li><strong>Adaptadores:</strong> velocidad de enlace, tráfico y dirección MAC de cada adaptador conectado.</li>
+            </ul>
+          </section>
+
+          <section id="g-game">
+            <h2><span class="gi"><i data-ic="gamepad"></i></span>Modo juego</h2>
+            <p>Con un solo botón prepara el equipo para jugar. Puedes elegir qué hace:</p>
+            <ul>
+              <li><strong>Cerrar procesos innecesarios</strong> (los de la limpieza recomendada) y los programas que añadas a la lista «Cerrar también».</li>
+              <li><strong>Plan de energía de alto rendimiento:</strong> usa «Máximo rendimiento» si existe (puedes añadirlo con un botón) o «Alto rendimiento». También puedes elegir el plan.</li>
+              <li><strong>Liberar memoria en espera</strong> (administrador).</li>
+            </ul>
+            <p>Al pulsar <strong>Desactivar</strong> se restaura el plan de energía que tenías. Los programas cerrados no se vuelven a abrir solos: ábrelos cuando los necesites.</p>
+          </section>
+
+          <section id="g-cleaner">
+            <h2><span class="gi"><i data-ic="sparkles"></i></span>Limpiador</h2>
+            <p>Al entrar analiza cuánto ocupa cada categoría. Marca las que quieras y pulsa <strong>Limpiar</strong>.</p>
+            <table>
+              <tr><th>Categoría</th><th>Qué elimina</th></tr>
+              <tr><td>Temporales</td><td>Archivos temporales de tu usuario y de Windows (se respetan los de la última hora).</td></tr>
+              <tr><td>Windows Update</td><td>Actualizaciones ya instaladas y copias de optimización de distribución (administrador).</td></tr>
+              <tr><td>Errores</td><td>Informes de fallos y volcados de memoria.</td></tr>
+              <tr><td>Miniaturas</td><td>Vistas previas del Explorador (se regeneran).</td></tr>
+              <tr><td>Sombreadores</td><td>Caché de DirectX, NVIDIA y AMD. Desmarcado por defecto: los juegos tardan algo más la primera vez.</td></tr>
+              <tr><td>Navegadores</td><td>Solo la <strong>caché</strong> de Chrome, Edge, Brave, Opera, Vivaldi y Firefox. Nunca historial, contraseñas ni sesiones.</td></tr>
+              <tr><td>Aplicaciones</td><td>Caché de Discord, Steam, Teams y Spotify.</td></tr>
+              <tr><td>Papelera</td><td>Vacía la Papelera (desmarcada por defecto).</td></tr>
+            </table>
+            <p>Los archivos que estén en uso se omiten. Si un programa está abierto se indica, para que lo cierres y se pueda limpiar entero.</p>
+          </section>
+
+          <section id="g-space">
+            <h2><span class="gi"><i data-ic="pie"></i></span>Espacio en disco</h2>
+            <p>Elige una unidad (o «Otra carpeta…») y pulsa <strong>Analizar</strong>. Al terminar verás:</p>
+            <ul>
+              <li>Un <strong>mapa</strong> donde cada rectángulo es una carpeta y su tamaño es proporcional a lo que ocupa. Haz clic para entrar; usa la ruta superior para volver.</li>
+              <li><strong>Contenido:</strong> subcarpetas y archivos ordenados por tamaño, con su porcentaje.</li>
+              <li><strong>Archivos más grandes</strong> de toda la unidad y <strong>Por tipo</strong> (vídeos, imágenes, juegos, programas…).</li>
+              <li>Desde cada fila puedes mostrarlo en el Explorador o enviarlo a la Papelera.</li>
+            </ul>
+          </section>
+
+          <section id="g-dupes">
+            <h2><span class="gi"><i data-ic="copy"></i></span>Duplicados</h2>
+            <p>Busca archivos con <strong>exactamente el mismo contenido</strong>, aunque tengan distinto nombre o fecha. Primero agrupa por tamaño, después compara un fragmento y finalmente confirma con una huella SHA-256 del archivo completo, así que no hay falsos positivos.</p>
+            <ul>
+              <li>Añade las carpetas, elige tipo (imágenes, vídeos…) y tamaño mínimo.</li>
+              <li>Se marcan automáticamente las copias a eliminar conservando la más antigua; puedes cambiar el criterio (más reciente, ruta más corta) o marcar a mano.</li>
+              <li>Siempre se conserva al menos una copia de cada grupo, y lo eliminado va a la Papelera.</li>
+            </ul>
+          </section>
+
+          <section id="g-startup">
+            <h2><span class="gi"><i data-ic="power"></i></span>Programas de inicio</h2>
+            <p>Lista todo lo que se abre al iniciar sesión: entradas del registro, carpetas de Inicio y apps de la Tienda. El interruptor <strong>activa o desactiva</strong> cada programa exactamente igual que el Administrador de tareas, así que se puede revertir en cualquier momento.</p>
+            <ul>
+              <li><strong>En ejecución</strong> indica que está abierto ahora mismo.</li>
+              <li><strong>Archivo no encontrado</strong> es una entrada rota de un programa ya desinstalado: puedes eliminarla.</li>
+              <li>Los programas que se inician «para todos los usuarios» requieren administrador.</li>
+            </ul>
+          </section>
+
+          <section id="g-uninstall">
+            <h2><span class="gi"><i data-ic="package"></i></span>Desinstalar programas</h2>
+            <ol>
+              <li>Busca el programa y pulsa <strong>Desinstalar</strong>. Se abre su desinstalador oficial: sigue sus pasos.</li>
+              <li>Vantix espera a que termine (también si el desinstalador se relanza en otra ventana).</li>
+              <li>Después busca <strong>restos</strong>: la carpeta de instalación, carpetas en AppData y ProgramData con el nombre del programa y su configuración en el registro.</li>
+              <li>Revisa la lista y elimina lo que quieras. Las carpetas van a la Papelera; las ramas principales del registro están protegidas.</li>
+            </ol>
+            <p>Si cancelas la desinstalación, no se ofrece borrar nada.</p>
+          </section>
           <section id="g-unlock">
             <h2><span class="gi"><i data-ic="unlock"></i></span>Eliminación forzada</h2>
             <p>Sirve para borrar carpetas o archivos que Windows no deja eliminar con mensajes como <em>«La acción no se puede completar porque el archivo está abierto en otro programa»</em>.</p>
@@ -334,6 +455,28 @@
             </ul>
           </section>
 
+
+          <section id="g-rename">
+            <h2><span class="gi"><i data-ic="edit"></i></span>Renombrar en masa</h2>
+            <p>Carga una carpeta y combina reglas; la <strong>vista previa</strong> muestra el nombre nuevo de cada archivo antes de tocar nada.</p>
+            <table>
+              <tr><th>Regla</th><th>Ejemplo</th></tr>
+              <tr><td>Buscar y reemplazar</td><td>«IMG_» → «Vacaciones » (admite expresiones regulares)</td></tr>
+              <tr><td>Nombre nuevo + numerar</td><td>Foto 001.jpg, Foto 002.jpg… (inicio, paso, dígitos y orden)</td></tr>
+              <tr><td>Prefijo / sufijo</td><td>«2026 - » + nombre + « (final)»</td></tr>
+              <tr><td>Añadir fecha</td><td>Fecha de modificación: 2026-11-22 Nombre.pdf</td></tr>
+              <tr><td>Mayúsculas</td><td>minúsculas, MAYÚSCULAS, Tipo Título…</td></tr>
+              <tr><td>Extensión</td><td>.JPG → .jpg, o cambiarla por otra</td></tr>
+              <tr><td>Limpieza</td><td>Espacios por guiones bajos, quitar espacios dobles o tildes</td></tr>
+            </table>
+            <p>Se detectan nombres no válidos, repetidos o que ya existen. Puedes desmarcar archivos concretos y <strong>deshacer</strong> el último renombrado.</p>
+          </section>
+
+          <section id="g-sysinfo">
+            <h2><span class="gi"><i data-ic="monitor"></i></span>Información del sistema</h2>
+            <p>Resumen completo del equipo: Windows (edición, versión, compilación), placa base y BIOS, procesador, memoria y sus módulos, gráficas, pantallas (resolución y frecuencia), discos y unidades, red y batería.</p>
+            <p>Puedes <strong>copiarlo</strong> (para pegarlo en un foro o en un chat), exportarlo a <strong>TXT</strong> o generar un <strong>informe</strong> HTML con formato que se puede imprimir o guardar como PDF.</p>
+          </section>
           <section id="g-admin">
             <h2><span class="gi"><i data-ic="shield"></i></span>Modo administrador</h2>
             <p>Por defecto la aplicación funciona con los permisos de tu usuario, que bastan para casi todo. Algunas acciones necesitan permisos de administrador:</p>
@@ -345,12 +488,20 @@
             <p>Pulsa <strong>Ejecutar como administrador</strong> en la barra lateral. Windows pedirá confirmación y la aplicación se reiniciará con permisos elevados sin cerrar la ventana. Cuando una acción falle por falta de permisos, la aplicación te lo indicará.</p>
           </section>
 
+
+          <section id="g-update">
+            <h2><span class="gi"><i data-ic="download"></i></span>Actualizaciones</h2>
+            <p>La aplicación se publica en GitHub. Al abrirla comprueba si hay una versión nueva; si la hay, aparece un aviso en la barra lateral. Al pulsar <strong>Actualizar ahora</strong> descarga el nuevo .exe, comprueba que es válido (y su suma de comprobación) y se reinicia con él sin cerrar la ventana.</p>
+            <p>Puedes desactivar la comprobación automática o buscar a mano en <strong>Ajustes › Actualizaciones</strong>, donde también hay un enlace para descargar el .exe desde GitHub.</p>
+          </section>
           <section id="g-settings">
             <h2><span class="gi"><i data-ic="sliders"></i></span>Ajustes</h2>
             <ul>
               <li><strong>Pedir confirmación:</strong> muestra un aviso antes de finalizar procesos.</li>
               <li><strong>Incluir procesos pesados:</strong> añade a la limpieza los programas en segundo plano que superen el límite de memoria que indiques.</li>
               <li><strong>Frecuencia de actualización:</strong> cada cuántos segundos se refrescan el Resumen y los Procesos. Un valor mayor consume todavía menos.</li>
+              <li><strong>Actualizaciones:</strong> comprobación automática, buscar ahora e instalar.</li>
+              <li><strong>Sensores:</strong> puerto del servidor web de LibreHardwareMonitor (8085 por defecto).</li>
               <li><strong>Exclusiones:</strong> programas que la limpieza nunca cerrará (por ejemplo, <span class="mono">onedrive.exe</span>).</li>
               <li><strong>Cerrar siempre:</strong> programas que quieres incluir siempre en la limpieza.</li>
             </ul>
@@ -360,7 +511,7 @@
           <section id="g-privacy">
             <h2><span class="gi"><i data-ic="lock"></i></span>Seguridad y privacidad</h2>
             <ul>
-              <li>La aplicación no se conecta a Internet ni envía ningún dato.</li>
+              <li>La aplicación no envía ningún dato. Solo se conecta a GitHub para comprobar y descargar actualizaciones (se puede desactivar).</li>
               <li>La interfaz solo es accesible desde tu propio equipo y está protegida con una clave aleatoria que cambia en cada inicio.</li>
               <li>Antes de finalizar un proceso se comprueba que sigue siendo el mismo (Windows reutiliza los números de proceso).</li>
               <li>Los procesos esenciales de Windows y los antivirus nunca se finalizan, ni siquiera de forma manual.</li>
@@ -388,6 +539,10 @@
             <p>Vuelve a abrir el programa normalmente. Si era un componente en segundo plano, se iniciará solo cuando se necesite o tras reiniciar el equipo.</p>
             <h4>La carpeta sigue sin poder eliminarse</h4>
             <p>Ejecuta la aplicación como administrador y repite el análisis. Si aun así queda algo, usa <strong>Programar eliminación al reiniciar</strong>.</p>
+            <h4>No veo la temperatura del procesador</h4>
+            <p>Windows no la expone sin un controlador. Abre LibreHardwareMonitor con el servidor web activado (ver la sección Hardware) y aparecerá junto al resto de sensores.</p>
+            <h4>¿Es seguro el limpiador?</h4>
+            <p>Sí: solo borra cachés y temporales que los programas vuelven a crear. Nunca toca documentos, descargas, contraseñas ni el historial del navegador.</p>
             <h4>¿Por qué la ventana usa Microsoft Edge?</h4>
             <p>La interfaz se muestra con el motor de Edge que ya incluye Windows, en una ventana independiente y con un perfil propio. Así la aplicación no necesita instalarse y ocupa muy poco.</p>
           </section>
@@ -420,6 +575,17 @@
             <div class="addrow"><input class="input sm" id="inAlways" placeholder="nombre.exe" style="width:260px" spellcheck="false"><button class="btn sm" id="addAlways"><i data-ic="plus"></i>Añadir</button></div></div>
         </div>
         <div class="card">
+          <div class="ch"><h3>Actualizaciones</h3><span class="sub" id="sVer"></span></div>
+          <div class="srow"><div class="st"><b>Buscar actualizaciones automáticamente</b><span>Al abrir la aplicación comprueba en GitHub si hay una versión nueva. Nunca se instala nada sin que lo confirmes.</span></div><label class="switch"><input type="checkbox" id="sAutoUpd"><span></span></label></div>
+          <div class="srow"><div class="st"><b id="sUpdTitle">Versión instalada</b><span id="sUpdText">Pulsa «Buscar ahora» para comprobarlo.</span><div class="bar" id="sUpdBar" style="display:none;margin-top:8px;max-width:360px"><i style="width:0"></i></div></div>
+            <button class="btn sm" id="sUpdCheck"><i data-ic="refresh"></i>Buscar ahora</button><button class="btn sm primary" id="sUpdInstall" style="display:none"><i data-ic="download"></i>Instalar</button></div>
+          <div class="srow"><div class="st"><b>Descargar la última versión</b><span>Página de GitHub con todas las versiones publicadas del ejecutable.</span></div><a class="btn sm" id="sUpdPage" href="https://github.com/ByAlvaroo/Vantix/releases/latest" target="_blank" rel="noopener"><i data-ic="external"></i>Abrir GitHub</a></div>
+        </div>
+        <div class="card">
+          <div class="ch"><h3>Sensores</h3></div>
+          <div class="srow"><div class="st"><b>Puerto de LibreHardwareMonitor</b><span>Si tienes LibreHardwareMonitor abierto con su servidor web activado, la sección Hardware muestra todas sus temperaturas, ventiladores y voltajes.</span></div><input class="input sm num" id="sLhmPort" type="number" min="1" max="65535" style="width:90px"></div>
+        </div>
+        <div class="card">
           <div class="ch"><h3>Búsqueda de archivos</h3></div>
           <div class="srow"><div class="st"><b>Restablecer opciones de búsqueda</b><span>Vuelve a los valores iniciales de modo, unidades y opciones avanzadas.</span></div><button class="btn sm" id="sResetSearch">Restablecer</button></div>
         </div>
@@ -431,6 +597,191 @@
         </div>
       </div>
     </div>
+  </section>
+
+  <!-- ================= HARDWARE ================= -->
+  <section class="page" id="p-hardware">
+    <div class="phead">
+      <div><h1>Hardware</h1><p>Uso, frecuencias y temperaturas de los componentes en tiempo real.</p></div>
+      <div class="acts"><button class="btn" id="hwPurge"><i data-ic="memory"></i>Liberar memoria en espera</button></div>
+    </div>
+    <div class="pbody">
+      <div class="temps" id="hwTemps"></div>
+      <div class="grid2">
+        <div class="card"><div class="ch"><h3>Procesador</h3><span class="sub" id="hwCpuName"></span></div><div class="cb" id="hwCpu"></div></div>
+        <div class="card"><div class="ch"><h3>Tarjeta gráfica</h3><span class="sub" id="hwGpuName"></span></div><div class="cb" id="hwGpu"></div></div>
+      </div>
+      <div class="grid2">
+        <div class="card"><div class="ch"><h3>Memoria RAM</h3><span class="sub" id="hwMemSub"></span></div><div class="cb" id="hwMem"></div></div>
+        <div class="card"><div class="ch"><h3>Almacenamiento</h3></div><div class="cb" id="hwDisks"></div></div>
+      </div>
+      <div class="card"><div class="ch"><h3>Todos los sensores</h3><span class="sub">Temperaturas, ventiladores, voltajes y consumo</span><div class="right" id="hwLhmState"></div></div><div class="cb" id="hwSensors"></div></div>
+    </div>
+  </section>
+
+  <!-- ================= RED ================= -->
+  <section class="page" id="p-network">
+    <div class="phead">
+      <div><h1>Red</h1><p>Qué programas usan Internet, cuánto y con qué se conectan.</p></div>
+      <div class="acts"><button class="btn ghost sm" id="netPause"><i data-ic="pause"></i><span>Pausar</span></button></div>
+    </div>
+    <div class="pbody">
+      <div class="kpis" style="grid-template-columns:repeat(4,minmax(0,1fr))">
+        <div class="card kpi"><div class="lbl"><i data-ic="down"></i>Descarga</div><div class="val num" id="nDown">–</div><div class="sub" id="nDownTot">&nbsp;</div></div>
+        <div class="card kpi"><div class="lbl"><i data-ic="up"></i>Subida</div><div class="val num" id="nUp">–</div><div class="sub" id="nUpTot">&nbsp;</div></div>
+        <div class="card kpi" style="grid-column:span 2"><div class="lbl"><i data-ic="activity"></i>Últimos 2 minutos</div><canvas id="nChart" style="height:66px;margin-top:10px"></canvas></div>
+      </div>
+      <div id="netAdminNote"></div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="ch"><h3>Programas conectados</h3><span class="sub" id="netCount"></span><div class="right"><label class="search"><i data-ic="search"></i><input class="input sm" id="netFilter" placeholder="Filtrar…" style="width:200px"></label></div></div>
+        <div style="max-height:520px;overflow:auto">
+          <table class="tbl"><colgroup><col><col style="width:110px"><col style="width:110px"><col style="width:110px"><col style="width:120px"><col style="width:120px"></colgroup>
+            <thead><tr><th>Programa</th><th class="r-right">Conexiones</th><th class="r-right">Descarga</th><th class="r-right">Subida</th><th class="r-right">Recibido</th><th class="r-right">Enviado</th></tr></thead>
+            <tbody id="netBody"></tbody></table>
+        </div>
+      </div>
+      <div class="card"><div class="ch"><h3>Adaptadores de red</h3></div><table class="tbl mini"><tbody id="netIfaces"></tbody></table></div>
+    </div>
+  </section>
+
+  <!-- ================= MODO JUEGO ================= -->
+  <section class="page" id="p-game">
+    <div class="phead"><div><h1>Modo juego</h1><p>Prepara el equipo para jugar con un solo clic y vuelve a la normalidad al terminar.</p></div></div>
+    <div class="pbody">
+      <div class="settings">
+        <div class="card gamehero" id="gameHero"></div>
+        <div class="card">
+          <div class="ch"><h3>Qué hace al activarse</h3></div>
+          <div class="srow"><div class="st"><b>Cerrar procesos innecesarios</b><span>Los mismos que la limpieza recomendada (actualizadores, widgets, Game Bar…).</span></div><label class="switch"><input type="checkbox" id="gCloseBloat"><span></span></label></div>
+          <div class="srow"><div class="st"><b>Plan de energía de alto rendimiento</b><span>El procesador mantiene frecuencias altas. Al desactivar el modo juego se restaura tu plan anterior.</span></div>
+            <select class="input sm" id="gPlan" style="max-width:240px"></select><label class="switch"><input type="checkbox" id="gPower"><span></span></label></div>
+          <div class="srow"><div class="st"><b>Liberar memoria en espera</b><span>Vacía la caché de memoria en espera para dejar más RAM libre al juego. Requiere administrador.</span></div><label class="switch"><input type="checkbox" id="gStandby"><span></span></label></div>
+        </div>
+        <div class="card">
+          <div class="ch"><h3>Cerrar también estos programas</h3><span class="sub">Por ejemplo, el lanzador de un juego que no uses o una app de sincronización</span></div>
+          <div class="cb"><div class="tags" id="gExtraTags"></div>
+            <div class="addrow"><select class="input sm" id="gExtraSel" style="width:320px"><option value="">Elige un programa en ejecución…</option></select><button class="btn sm" id="gExtraAdd"><i data-ic="plus"></i>Añadir</button></div></div>
+        </div>
+        <div class="card">
+          <div class="ch"><h3>Planes de energía</h3><div class="right"><button class="btn sm" id="gUltimate"><i data-ic="plus"></i>Añadir «Máximo rendimiento»</button></div></div>
+          <div id="gPlans"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= LIMPIADOR ================= -->
+  <section class="page" id="p-cleaner">
+    <div class="phead">
+      <div><h1>Limpiador</h1><p>Libera espacio eliminando archivos temporales y cachés que ya no se necesitan.</p></div>
+      <div class="acts"><button class="btn" id="clScan"><i data-ic="scan"></i>Volver a analizar</button><button class="btn primary" id="clRun"><i data-ic="sparkles"></i><span>Limpiar</span></button></div>
+    </div>
+    <div class="pbody"><div id="clSummary"></div><div id="clList" style="max-width:1100px"></div></div>
+  </section>
+
+  <!-- ================= ESPACIO ================= -->
+  <section class="page" id="p-space">
+    <div class="phead"><div><h1>Espacio en disco</h1><p>Descubre qué carpetas y archivos ocupan más espacio.</p></div></div>
+    <div class="pbody flex">
+      <div class="toolbar"><div class="chips" id="spDrives"></div><button class="btn sm" id="spPick"><i data-ic="folder"></i>Otra carpeta…</button><button class="btn primary sm" id="spGo"><i data-ic="scan"></i>Analizar</button></div>
+      <div class="sstatus" id="spStatus"><span class="dot" id="spDot"></span><span id="spText" style="font-weight:600;white-space:nowrap">Elige una unidad y pulsa Analizar</span><span id="spCur" class="faint" style="font-size:12px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;flex:1"></span></div>
+      <div class="spwrap" id="spResult" style="display:none">
+        <div class="crumbs" id="spCrumbs"></div>
+        <div class="spgrid">
+          <div class="card spmap"><div id="spMap"></div></div>
+          <div class="card spside">
+            <div class="seg" id="spTabs" style="margin:10px 12px"><button class="on" data-t="list">Contenido</button><button data-t="big">Archivos más grandes</button><button data-t="types">Por tipo</button></div>
+            <div id="spList" class="splist"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= DUPLICADOS ================= -->
+  <section class="page" id="p-dupes">
+    <div class="phead"><div><h1>Archivos duplicados</h1><p>Encuentra copias idénticas (mismo contenido) aunque tengan distinto nombre.</p></div></div>
+    <div class="pbody">
+      <div class="steps">
+        <div class="card"><div class="ch"><h3>Dónde buscar</h3></div><div class="cb">
+          <div class="tags" id="dpRoots"></div>
+          <div class="addrow"><button class="btn sm" id="dpAdd"><i data-ic="folder"></i>Añadir carpeta…</button><button class="btn sm ghost" id="dpHome"><i data-ic="plus"></i>Mi carpeta de usuario</button></div>
+          <div class="frow" style="margin-top:14px"><span class="flbl">Tipo</span><div class="chips" id="dpTypes">
+            <div class="chip on" data-x="">Todos</div><div class="chip" data-x="jpg,jpeg,png,gif,bmp,webp,heic,tif,tiff,raw,cr2,nef,arw">Imágenes</div><div class="chip" data-x="mp4,mkv,avi,mov,wmv,webm,m4v">Vídeos</div><div class="chip" data-x="mp3,wav,flac,ogg,m4a,aac,wma">Música</div><div class="chip" data-x="pdf,doc,docx,xls,xlsx,ppt,pptx,txt,odt">Documentos</div><div class="chip" data-x="zip,rar,7z,iso,tar,gz">Comprimidos</div></div></div>
+          <div class="frow" style="margin-top:10px"><span class="flbl">Tamaño</span><select class="input sm" id="dpMin"><option value="1">Cualquiera</option><option value="102400">Más de 100 KB</option><option value="1048576" selected>Más de 1 MB</option><option value="10485760">Más de 10 MB</option><option value="104857600">Más de 100 MB</option></select>
+            <label class="ck" style="margin-left:10px"><input type="checkbox" class="check" id="dpHidden">Incluir carpetas ocultas</label>
+            <button class="btn primary" id="dpGo" style="margin-left:auto"><i data-ic="search"></i>Buscar duplicados</button></div>
+        </div></div>
+        <div class="sstatus" id="dpStatus" style="display:none"><span class="dot" id="dpDot"></span><span id="dpText" style="font-weight:600;white-space:nowrap"></span><span id="dpCur" class="faint" style="font-size:12px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;flex:1"></span><div class="bar" style="width:180px"><i id="dpBar" style="width:0"></i></div></div>
+        <div id="dpResult"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= INICIO ================= -->
+  <section class="page" id="p-startup">
+    <div class="phead"><div><h1>Programas de inicio</h1><p>Elige qué programas se abren solos al encender el equipo.</p></div>
+      <div class="acts"><button class="btn" id="suRefresh"><i data-ic="refresh"></i>Actualizar</button></div></div>
+    <div class="pbody flex">
+      <div class="card strip" id="suStrip"></div>
+      <div class="tablewrap">
+        <table class="tbl"><colgroup><col><col style="width:200px"><col style="width:190px"><col style="width:110px"><col style="width:96px"></colgroup>
+          <thead><tr><th>Programa</th><th>Editor</th><th>Origen</th><th>Al iniciar</th><th></th></tr></thead>
+          <tbody id="suBody"></tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= DESINSTALAR ================= -->
+  <section class="page" id="p-uninstall">
+    <div class="phead"><div><h1>Desinstalar programas</h1><p>Desinstala programas y elimina los restos que dejan (carpetas y registro).</p></div></div>
+    <div class="pbody flex">
+      <div class="toolbar">
+        <label class="search"><i data-ic="search"></i><input class="input" id="unFilter" placeholder="Buscar programa o editor…" style="width:300px"></label>
+        <div class="seg" id="unSort"><button class="on" data-s="name">Nombre</button><button data-s="size">Tamaño</button><button data-s="date">Fecha</button></div>
+        <span class="faint" id="unCount" style="margin-left:auto;font-size:12.5px"></span>
+      </div>
+      <div class="tablewrap">
+        <table class="tbl"><colgroup><col><col style="width:130px"><col style="width:100px"><col style="width:110px"><col style="width:120px"></colgroup>
+          <thead><tr><th>Programa</th><th>Versión</th><th class="r-right">Tamaño</th><th>Instalado</th><th></th></tr></thead>
+          <tbody id="unBody"></tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= RENOMBRAR ================= -->
+  <section class="page" id="p-rename">
+    <div class="phead"><div><h1>Renombrar en masa</h1><p>Cambia el nombre de muchos archivos a la vez con vista previa antes de aplicar.</p></div>
+      <div class="acts"><button class="btn" id="rnUndo"><i data-ic="undo"></i>Deshacer último</button></div></div>
+    <div class="pbody">
+      <div class="steps" style="max-width:1200px">
+        <div class="card"><div class="ch"><h3>1. Carpeta</h3></div><div class="cb">
+          <div class="pathrow"><input class="input" id="rnPath" placeholder="Carpeta con los archivos" spellcheck="false"><button class="btn" id="rnPick"><i data-ic="folder"></i>Carpeta…</button><button class="btn primary" id="rnLoad">Cargar</button></div>
+          <div class="opts" style="margin-top:12px"><label class="ck"><input type="checkbox" class="check" id="rnRec">Incluir subcarpetas</label><label class="ck"><input type="checkbox" class="check" id="rnDirs">Renombrar también carpetas</label>
+            <label class="field">Solo extensiones <input class="input sm" id="rnExt" placeholder="jpg, png" style="width:140px"></label></div>
+        </div></div>
+        <div class="card"><div class="ch"><h3>2. Reglas</h3><span class="sub">Se aplican en este orden</span><div class="right"><button class="btn sm ghost" id="rnReset">Restablecer</button></div></div>
+          <div class="cb rules">
+            <div class="rule"><label>Buscar</label><input class="input sm" id="rFind" spellcheck="false"><label>Reemplazar por</label><input class="input sm" id="rRepl" spellcheck="false"><label class="ck"><input type="checkbox" class="check" id="rRegex">Regex</label><label class="ck"><input type="checkbox" class="check" id="rCase">Distinguir mayúsculas</label></div>
+            <div class="rule"><label>Nombre nuevo</label><input class="input sm" id="rBase" placeholder="Vacío = conservar el nombre" spellcheck="false"><label>Prefijo</label><input class="input sm" id="rPre" spellcheck="false"><label>Sufijo</label><input class="input sm" id="rSuf" spellcheck="false"></div>
+            <div class="rule"><label class="ck"><input type="checkbox" class="check" id="rNum">Numerar</label><label>Inicio</label><input class="input sm num" id="rStart" type="number" value="1" style="width:70px"><label>Paso</label><input class="input sm num" id="rStep" type="number" value="1" style="width:60px"><label>Dígitos</label><input class="input sm num" id="rDigits" type="number" value="3" min="1" max="8" style="width:60px"><label>Separador</label><input class="input sm" id="rSep" value=" " style="width:50px"><select class="input sm" id="rNumPos"><option value="end">Al final</option><option value="start">Al principio</option></select><label>Orden</label><select class="input sm" id="rOrder"><option value="name">Por nombre</option><option value="date">Por fecha</option><option value="size">Por tamaño</option></select></div>
+            <div class="rule"><label class="ck"><input type="checkbox" class="check" id="rDate">Añadir fecha</label><select class="input sm" id="rDateFmt"><option value="Y-m-d">2026-11-22</option><option value="Ymd">20261122</option><option value="d-m-Y">22-11-2026</option><option value="Y-m-d_His">2026-11-22_093000</option></select><select class="input sm" id="rDatePos"><option value="start">Al principio</option><option value="end">Al final</option></select>
+              <label>Mayúsculas</label><select class="input sm" id="rCaseMode"><option value="">Sin cambios</option><option value="lower">minúsculas</option><option value="upper">MAYÚSCULAS</option><option value="title">Tipo Título</option><option value="sentence">Primera letra</option></select>
+              <label>Extensión</label><select class="input sm" id="rExtMode"><option value="">Mantener</option><option value="lower">minúsculas</option><option value="upper">MAYÚSCULAS</option><option value="set">Cambiar a…</option></select><input class="input sm" id="rExtNew" placeholder="jpg" style="width:70px;display:none"></div>
+            <div class="rule"><label class="ck"><input type="checkbox" class="check" id="rUnder">Espacios → guiones bajos</label><label class="ck"><input type="checkbox" class="check" id="rSpaces">Quitar espacios dobles</label><label class="ck"><input type="checkbox" class="check" id="rAccents">Quitar tildes</label></div>
+          </div></div>
+        <div class="card"><div class="ch"><h3>3. Vista previa</h3><span class="sub" id="rnSum"></span><div class="right"><button class="btn primary" id="rnApply" disabled><i data-ic="check"></i><span>Aplicar cambios</span></button></div></div>
+          <div style="max-height:460px;overflow:auto"><table class="tbl"><colgroup><col style="width:44px"><col><col><col style="width:150px"></colgroup>
+            <thead><tr><th><input type="checkbox" class="check" id="rnAll" checked></th><th>Nombre actual</th><th>Nombre nuevo</th><th>Estado</th></tr></thead><tbody id="rnBody"></tbody></table></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= INFORMACIÓN DEL SISTEMA ================= -->
+  <section class="page" id="p-sysinfo">
+    <div class="phead"><div><h1>Información del sistema</h1><p>Componentes, Windows y estado del equipo. Puedes copiarlo o exportarlo.</p></div>
+      <div class="acts"><button class="btn" id="siCopy"><i data-ic="copy"></i>Copiar</button><button class="btn" id="siTxt"><i data-ic="download"></i>Exportar TXT</button><button class="btn primary" id="siHtml"><i data-ic="download"></i>Exportar informe</button></div></div>
+    <div class="pbody"><div class="sigrid" id="siBody"><div class="empty"><div class="ic"><i data-ic="monitor"></i></div><b>Recopilando información…</b></div></div></div>
   </section>
 </div>
 
@@ -447,5 +798,8 @@
 <div id="overlay"><div class="box"><div class="spin"></div><div id="overlayText" style="font-weight:600">Reconectando…</div><div class="faint" id="overlaySub" style="font-size:12.5px;margin-top:4px"></div></div></div>
 
 <script src="app.js"></script>
+<script src="hw.js"></script>
+<script src="clean.js"></script>
+<script src="sys.js"></script>
 </body>
 </html>

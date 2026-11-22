@@ -1,0 +1,53 @@
+# Compila Vantix.exe y lo publica en GitHub Releases.
+# Se ejecuta al subir un cambio en version.txt (o a mano desde la pestaña Actions).
+name: Compilar y publicar
+
+on:
+  push:
+    branches: [main, master]
+    paths: ['version.txt']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Leer versión
+        id: v
+        run: echo "version=$(tr -d ' \r\n' < version.txt)" >> "$GITHUB_OUTPUT"
+
+      - name: Icono, manifiesto e información de versión
+        run: |
+          pip install --quiet pillow
+          python tools/mksyso.py
+
+      - name: Compilar
+        run: |
+          GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -trimpath \
+            -ldflags "-s -w -H windowsgui -X main.appVersion=${{ steps.v.outputs.version }}" \
+            -o Vantix.exe .
+
+      - name: Publicar release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="v${{ steps.v.outputs.version }}"
+          NOTES="Descarga **Vantix.exe** y ábrelo. No necesita instalación. Si ya tienes una versión anterior, la aplicación se actualizará sola."
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" Vantix.exe --clobber
+          else
+            gh release create "$TAG" Vantix.exe --title "Vantix Utilities $TAG" --notes "$NOTES"
+          fi

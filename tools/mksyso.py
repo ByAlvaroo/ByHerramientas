@@ -1,12 +1,16 @@
-import struct, io
+import struct, io, os
 from PIL import Image
-src = Image.open('icon256.png').convert('RGBA')
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
+VER = open(os.path.join(ROOT, 'version.txt')).read().strip() if os.path.exists(os.path.join(ROOT, 'version.txt')) else '1.0.0'
+VP = [int(x) for x in (VER.split('.') + ['0','0','0'])[:3]]
+src = Image.open(os.path.join(HERE, 'icon256.png')).convert('RGBA')
 sizes = [16,20,24,32,40,48,64,128,256]
 imgs = []
 for s in sizes:
     im = src.resize((s,s), Image.LANCZOS)
     b = io.BytesIO(); im.save(b,'PNG'); imgs.append((s,b.getvalue()))
-manifest = open('app.manifest','rb').read()
+manifest = open(os.path.join(HERE, 'app.manifest'),'rb').read().replace(b'1.0.0.0', ('%d.%d.%d.0' % tuple(VP)).encode())
 
 # recursos: tipo -> [(id, data)]
 res = {3: [(i+1, d) for i,(s,d) in enumerate(imgs)]}
@@ -25,8 +29,8 @@ def node(key, value=b'', vlen=0, typ=0, children=b''):
     return struct.pack('<H',len(body)) + body[2:]
 def sval(key, text):
     v=(text+'\0').encode('utf-16-le'); return pad4(node(key, v, len(v)//2, 1))
-fixed = struct.pack('<13I',0xFEEF04BD,0x00010000,(1<<16)|0,0,(1<<16)|0,0,0x3F,0,0x40004,1,0,0,0)
-strs = b''.join(sval(k,v) for k,v in [('CompanyName','@byalvaro__'),('FileDescription','Vantix Utilities'),('FileVersion','1.0.0'),('InternalName','Vantix'),('LegalCopyright','© 2026 @byalvaro__'),('OriginalFilename','Vantix.exe'),('ProductName','Vantix Utilities'),('ProductVersion','1.0.0')])
+fixed = struct.pack('<13I',0xFEEF04BD,0x00010000,(VP[0]<<16)|VP[1],VP[2]<<16,(VP[0]<<16)|VP[1],VP[2]<<16,0x3F,0,0x40004,1,0,0,0)
+strs = b''.join(sval(k,v) for k,v in [('CompanyName','@byalvaro__'),('FileDescription','Vantix Utilities'),('FileVersion',VER),('InternalName','Vantix'),('LegalCopyright','© 2026 @byalvaro__'),('OriginalFilename','Vantix.exe'),('ProductName','Vantix Utilities'),('ProductVersion',VER)])
 st = pad4(node('0C0A04B0', b'', 0, 1, strs))
 sfi = pad4(node('StringFileInfo', b'', 0, 1, st))
 var = pad4(node('Translation', struct.pack('<HH',0x0C0A,0x04B0), 4, 0))
@@ -77,6 +81,6 @@ out += buf
 for r in relocs: out += struct.pack('<IIH', r, 0, 3)
 out += struct.pack('<8sIhHBB', b'.rsrc\0\0\0', 0, 1, 0, 3, 0)
 out += struct.pack('<I', 4)
-open('rsrc_windows_amd64.syso','wb').write(out)
-src.resize((256,256)).save('vantix.ico', sizes=[(s,s) for s in [16,24,32,48,64,128,256]])
+open(os.path.join(ROOT, 'rsrc_windows_amd64.syso'),'wb').write(out)
+src.resize((256,256)).save(os.path.join(HERE, 'vantix.ico'), sizes=[(s,s) for s in [16,24,32,48,64,128,256]])
 print('ok', len(out))

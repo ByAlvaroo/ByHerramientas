@@ -17,18 +17,18 @@ import (
 // ---------- Instantánea de procesos ----------
 
 type rawProc struct {
-	PID      uint32
-	PPID     uint32
-	Name     string
-	Path     string
-	Session  uint32
-	WS       uint64 // conjunto de trabajo (bytes)
-	Private  uint64
-	CPUTime  uint64 // kernel + user (100 ns)
-	Create   uint64 // FILETIME de creación
-	Threads  uint32
-	Access   bool
-	CPU      float64 // % calculado entre muestras
+	PID     uint32
+	PPID    uint32
+	Name    string
+	Path    string
+	Session uint32
+	WS      uint64 // conjunto de trabajo (bytes)
+	Private uint64
+	CPUTime uint64 // kernel + user (100 ns)
+	Create  uint64 // FILETIME de creación
+	Threads uint32
+	Access  bool
+	CPU     float64 // % calculado entre muestras
 }
 
 func snapshotProcesses() []rawProc {
@@ -139,7 +139,7 @@ var (
 			return 1
 		}
 		ex, _, _ := pGetWindowLongPtrW.Call(hwnd, ^uintptr(19)) // GWL_EXSTYLE = -20
-		if ex&0x80 != 0 {                                        // WS_EX_TOOLWINDOW
+		if ex&0x80 != 0 {                                       // WS_EX_TOOLWINDOW
 			return 1
 		}
 		var cloaked uint32
@@ -216,47 +216,47 @@ var criticalNames = set(
 
 // Procesos en segundo plano que se pueden cerrar sin afectar al sistema.
 var bloat = map[string]string{
-	"googleupdate.exe":             "Actualizador de Google. Se vuelve a abrir solo cuando hace falta.",
-	"googlecrashhandler.exe":       "Gestor de informes de errores de Google.",
-	"googlecrashhandler64.exe":     "Gestor de informes de errores de Google.",
-	"microsoftedgeupdate.exe":      "Actualizador de Microsoft Edge.",
-	"msedgeupdate.exe":             "Actualizador de Microsoft Edge.",
-	"braveupdate.exe":              "Actualizador de Brave.",
-	"opera_autoupdate.exe":         "Actualizador de Opera.",
-	"dropboxupdate.exe":            "Actualizador de Dropbox.",
-	"adobearm.exe":                 "Actualizador de Adobe Acrobat/Reader.",
-	"adobeupdateservice.exe":       "Servicio de actualizaciones de Adobe.",
-	"adobenotificationclient.exe":  "Notificaciones de Adobe.",
-	"adobeipcbroker.exe":           "Comunicación interna de Adobe Creative Cloud.",
-	"ccxprocess.exe":               "Proceso en segundo plano de Creative Cloud.",
-	"coresync.exe":                 "Sincronización de archivos de Creative Cloud.",
-	"acrotray.exe":                 "Icono de bandeja de Adobe Acrobat.",
-	"jusched.exe":                  "Programador de actualizaciones de Java.",
-	"jucheck.exe":                  "Comprobador de actualizaciones de Java.",
-	"phoneexperiencehost.exe":      "Enlace Móvil (Phone Link) en segundo plano.",
-	"yourphone.exe":                "Enlace Móvil (Phone Link) en segundo plano.",
-	"yourphoneserver.exe":          "Enlace Móvil (Phone Link) en segundo plano.",
-	"gamebar.exe":                  "Xbox Game Bar en segundo plano.",
-	"gamebarftserver.exe":          "Servidor de Xbox Game Bar.",
-	"gamebarpresencewriter.exe":    "Registro de actividad de Xbox Game Bar.",
-	"widgets.exe":                  "Panel de widgets de Windows.",
-	"widgetservice.exe":            "Servicio del panel de widgets.",
-	"cortana.exe":                  "Cortana.",
-	"skypeapp.exe":                 "Skype en segundo plano.",
-	"skypebackgroundhost.exe":      "Skype en segundo plano.",
-	"hxtsr.exe":                    "Sincronización de la antigua app Correo y Calendario.",
-	"msoia.exe":                    "Telemetría de Microsoft Office.",
-	"crossdeviceresume.exe":        "Continuar en otro dispositivo (Windows).",
-	"crossdeviceservice.exe":       "Servicio entre dispositivos de Windows.",
-	"ms-teamsupdate.exe":           "Actualizador de Microsoft Teams.",
-	"microsoft.photos.exe":         "Fotos de Windows en segundo plano.",
-	"video.ui.exe":                 "Películas y TV en segundo plano.",
-	"epicwebhelper.exe":            "Componente web de Epic Games en segundo plano.",
-	"eabackgroundservice.exe":      "Servicio en segundo plano de EA app.",
+	"googleupdate.exe":              "Actualizador de Google. Se vuelve a abrir solo cuando hace falta.",
+	"googlecrashhandler.exe":        "Gestor de informes de errores de Google.",
+	"googlecrashhandler64.exe":      "Gestor de informes de errores de Google.",
+	"microsoftedgeupdate.exe":       "Actualizador de Microsoft Edge.",
+	"msedgeupdate.exe":              "Actualizador de Microsoft Edge.",
+	"braveupdate.exe":               "Actualizador de Brave.",
+	"opera_autoupdate.exe":          "Actualizador de Opera.",
+	"dropboxupdate.exe":             "Actualizador de Dropbox.",
+	"adobearm.exe":                  "Actualizador de Adobe Acrobat/Reader.",
+	"adobeupdateservice.exe":        "Servicio de actualizaciones de Adobe.",
+	"adobenotificationclient.exe":   "Notificaciones de Adobe.",
+	"adobeipcbroker.exe":            "Comunicación interna de Adobe Creative Cloud.",
+	"ccxprocess.exe":                "Proceso en segundo plano de Creative Cloud.",
+	"coresync.exe":                  "Sincronización de archivos de Creative Cloud.",
+	"acrotray.exe":                  "Icono de bandeja de Adobe Acrobat.",
+	"jusched.exe":                   "Programador de actualizaciones de Java.",
+	"jucheck.exe":                   "Comprobador de actualizaciones de Java.",
+	"phoneexperiencehost.exe":       "Enlace Móvil (Phone Link) en segundo plano.",
+	"yourphone.exe":                 "Enlace Móvil (Phone Link) en segundo plano.",
+	"yourphoneserver.exe":           "Enlace Móvil (Phone Link) en segundo plano.",
+	"gamebar.exe":                   "Xbox Game Bar en segundo plano.",
+	"gamebarftserver.exe":           "Servidor de Xbox Game Bar.",
+	"gamebarpresencewriter.exe":     "Registro de actividad de Xbox Game Bar.",
+	"widgets.exe":                   "Panel de widgets de Windows.",
+	"widgetservice.exe":             "Servicio del panel de widgets.",
+	"cortana.exe":                   "Cortana.",
+	"skypeapp.exe":                  "Skype en segundo plano.",
+	"skypebackgroundhost.exe":       "Skype en segundo plano.",
+	"hxtsr.exe":                     "Sincronización de la antigua app Correo y Calendario.",
+	"msoia.exe":                     "Telemetría de Microsoft Office.",
+	"crossdeviceresume.exe":         "Continuar en otro dispositivo (Windows).",
+	"crossdeviceservice.exe":        "Servicio entre dispositivos de Windows.",
+	"ms-teamsupdate.exe":            "Actualizador de Microsoft Teams.",
+	"microsoft.photos.exe":          "Fotos de Windows en segundo plano.",
+	"video.ui.exe":                  "Películas y TV en segundo plano.",
+	"epicwebhelper.exe":             "Componente web de Epic Games en segundo plano.",
+	"eabackgroundservice.exe":       "Servicio en segundo plano de EA app.",
 	"origin web helper service.exe": "Servicio en segundo plano de Origin.",
-	"nvidia web helper.exe":        "Componente web de NVIDIA GeForce Experience.",
-	"hpprintscandoctor.exe":        "Asistente de HP en segundo plano.",
-	"copilot.exe":                  "Copilot en segundo plano.",
+	"nvidia web helper.exe":         "Componente web de NVIDIA GeForce Experience.",
+	"hpprintscandoctor.exe":         "Asistente de HP en segundo plano.",
+	"copilot.exe":                   "Copilot en segundo plano.",
 }
 
 var securityVendors = []string{"microsoft defender", "windows defender", "avast", "avg ", "avira", "eset", "kaspersky", "mcafee", "norton", "symantec", "bitdefender", "malwarebytes", "sophos", "trend micro", "panda security", "f-secure", "webroot", "gen digital"}

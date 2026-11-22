@@ -51,14 +51,14 @@ func pickPath(folder bool, title string) (string, error) {
 		defer comCall(dlg, 2) // Release
 		var opts uint32
 		comCall(dlg, 10, uintptr(unsafe.Pointer(&opts))) // GetOptions
-		opts |= 0x40 | 0x800                              // FORCEFILESYSTEM | PATHMUSTEXIST
+		opts |= 0x40 | 0x800                             // FORCEFILESYSTEM | PATHMUSTEXIST
 		if folder {
 			opts |= 0x20 // PICKFOLDERS
 		} else {
 			opts |= 0x1000 // FILEMUSTEXIST
 		}
-		comCall(dlg, 9, uintptr(opts))                            // SetOptions
-		comCall(dlg, 17, uintptr(unsafe.Pointer(u16(title))))     // SetTitle
+		comCall(dlg, 9, uintptr(opts))                        // SetOptions
+		comCall(dlg, 17, uintptr(unsafe.Pointer(u16(title)))) // SetTitle
 		owner, _, _ := pGetForegroundWindow.Call()
 		if hr := comCall(dlg, 3, owner); hr != 0 { // Show
 			ch <- res{"", nil} // cancelado

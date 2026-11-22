@@ -28,7 +28,10 @@ import (
 )
 
 const appName = "Vantix Utilities"
-const appVersion = "1.0.0"
+
+// appVersion se sustituye al compilar en GitHub (-X main.appVersion=…)
+var appVersion = "1.1.0"
+
 const defaultPort = 47615
 
 //go:embed ui
@@ -44,11 +47,26 @@ type Config struct {
 	HeavyMB      int             `json:"heavyMB"`
 	Refresh      int             `json:"refresh"` // segundos entre actualizaciones
 	Search       json.RawMessage `json:"search,omitempty"`
+	AutoUpdate   bool            `json:"autoUpdate"`
+	LHMPort      int             `json:"lhmPort"`
+	Game         GameConfig      `json:"game"`
+	GameActive   bool            `json:"gameActive"`
+	GameSince    int64           `json:"gameSince"`
+	PrevPlan     string          `json:"prevPlan"`
+}
+
+type GameConfig struct {
+	CloseBloat bool     `json:"closeBloat"`
+	Extra      []string `json:"extra"`
+	Power      bool     `json:"power"`
+	PlanGUID   string   `json:"planGuid"`
+	Standby    bool     `json:"standby"`
 }
 
 var (
 	cfgMu sync.Mutex
-	cfg   = Config{ConfirmKill: true, HeavyMB: 400, Refresh: 3, Exclusions: []string{}, AlwaysClose: []string{}}
+	cfg   = Config{ConfirmKill: true, HeavyMB: 400, Refresh: 3, Exclusions: []string{}, AlwaysClose: []string{}, AutoUpdate: true, LHMPort: 8085,
+		Game: GameConfig{CloseBloat: true, Power: true, Standby: true, Extra: []string{}}}
 )
 
 func dataDir() string {
@@ -76,6 +94,13 @@ func loadConfig() {
 	if cfg.AlwaysClose == nil {
 		cfg.AlwaysClose = []string{}
 	}
+	if cfg.Game.Extra == nil {
+		cfg.Game.Extra = []string{}
+	}
+	if cfg.LHMPort <= 0 {
+		cfg.LHMPort = 8085
+	}
+	lhmPort = cfg.LHMPort
 	cfgMu.Unlock()
 }
 
@@ -116,14 +141,20 @@ type instanceInfo struct {
 	Token string `json:"token"`
 }
 
-func instanceFile() string { return filepath.Join(os.Getenv("LOCALAPPDATA"), "Vantix", "instance.json") }
+func instanceFile() string {
+	return filepath.Join(os.Getenv("LOCALAPPDATA"), "Vantix", "instance.json")
+}
 
 func main() {
 	elevated := flag.Bool("elevated", false, "")
 	fPort := flag.Int("port", 0, "")
 	fToken := flag.String("token", "", "")
 	fEdge := flag.Int("edge", 0, "")
+	handoff := flag.Bool("handoff", false, "")
 	flag.Parse()
+	if *handoff {
+		*elevated = true // misma lógica: reutiliza puerto, clave y ventana
+	}
 
 	selfPID = currentPID()
 	adminCached = isAdmin()
@@ -188,6 +219,10 @@ func main() {
 		edgePID = openWindow(url)
 	}
 	smp.get(0) // primera muestra para el % de CPU
+	go cleanupOldExe()
+	if getConfig().AutoUpdate {
+		go func() { time.Sleep(5 * time.Second); checkUpdate() }()
+	}
 
 	// Se cierra solo cuando no queda ninguna ventana conectada.
 	lastSeen.Store(time.Now().Unix())
@@ -402,6 +437,14 @@ func routes() http.Handler {
 			if c.Search == nil {
 				c.Search = cfg.Search
 			}
+			c.GameActive, c.GameSince, c.PrevPlan = cfg.GameActive, cfg.GameSince, cfg.PrevPlan
+			if c.Game.Extra == nil {
+				c.Game.Extra = []string{}
+			}
+			if c.LHMPort <= 0 || c.LHMPort > 65535 {
+				c.LHMPort = 8085
+			}
+			lhmPort = c.LHMPort
 			if c.HeavyMB < 50 {
 				c.HeavyMB = 50
 			}
@@ -443,6 +486,8 @@ func routes() http.Handler {
 			os.Exit(0)
 		}()
 	})
+
+	registerExtra(api)
 
 	api("/api/drives", func(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, map[string]any{"drives": listDrives(), "home": os.Getenv("USERPROFILE")})

@@ -48,14 +48,14 @@ func foldAccents(s string) string {
 }
 
 type matcher struct {
-	mode     string
-	cs, acc  bool
-	q        string
-	words    []string
-	re       *regexp.Regexp
-	exts     map[string]bool
-	files    bool
-	dirs     bool
+	mode    string
+	cs, acc bool
+	q       string
+	words   []string
+	re      *regexp.Regexp
+	exts    map[string]bool
+	files   bool
+	dirs    bool
 }
 
 func (m *matcher) prep(s string) string {
