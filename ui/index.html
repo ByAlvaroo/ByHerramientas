@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Vantix Utilities</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%234b95ff'/%3E%3Cstop offset='1' stop-color='%232563eb'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='15' fill='url(%23g)'/%3E%3Cpath d='M17 19h9l6 17 6-17h9L36 46h-8z' fill='white'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+<aside id="side">
+  <div class="brand">
+    <div class="mark"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M3.5 5h4l4.5 11.5L16.5 5h4L14 20h-4z" fill="#fff"/></svg></div>
+    <div><b>Vantix</b><small>Utilities</small></div>
+  </div>
+  <div class="navlbl">Herramientas</div>
+  <div class="nav on" data-page="overview"><i data-ic="grid"></i>Resumen</div>
+  <div class="nav" data-page="processes"><i data-ic="activity"></i>Procesos</div>
+  <div class="nav" data-page="unlock"><i data-ic="unlock"></i>Eliminación forzada</div>
+  <div class="nav" data-page="search"><i data-ic="search"></i>Búsqueda de archivos</div>
+  <div class="navlbl">Aplicación</div>
+  <div class="nav" data-page="guide"><i data-ic="book"></i>Guía de uso</div>
+  <div class="nav" data-page="settings"><i data-ic="sliders"></i>Ajustes</div>
+  <div class="sidefoot">
+    <div class="priv" id="priv">
+      <div class="row1"><span class="dot" id="privDot"></span><span id="privTitle">Comprobando…</span></div>
+      <p id="privText"></p>
+      <button class="btn sm block" id="btnElevate"><i data-ic="shield"></i>Ejecutar como administrador</button>
+    </div>
+    <div class="sig">HECHO POR <b>@BYALVARO__</b></div>
+  </div>
+</aside>
+
+<div id="main">
+
+  <!-- ================= RESUMEN ================= -->
+  <section class="page on" id="p-overview">
+    <div class="phead">
+      <div><h1>Resumen</h1><p>Estado del equipo en tiempo real.</p></div>
+      <div class="acts"><span class="faint" id="ovHost" style="align-self:center;font-size:12.5px"></span></div>
+    </div>
+    <div class="pbody">
+      <div class="kpis">
+        <div class="card kpi"><div class="lbl"><i data-ic="cpu"></i>Procesador</div><div class="val num" id="kCpu">–</div><div class="sub" id="kCpuSub">&nbsp;</div><canvas id="spCpu"></canvas></div>
+        <div class="card kpi"><div class="lbl"><i data-ic="memory"></i>Memoria</div><div class="val num" id="kMem">–</div><div class="sub" id="kMemSub">&nbsp;</div><canvas id="spMem"></canvas></div>
+        <div class="card kpi"><div class="lbl"><i data-ic="layers"></i>Procesos</div><div class="val num" id="kProc">–</div><div class="sub" id="kProcSub">&nbsp;</div><div class="bar" style="margin-top:22px"><i id="kCommit" style="width:0"></i></div><div class="sub" id="kCommitSub" style="margin-top:6px">&nbsp;</div></div>
+        <div class="card kpi"><div class="lbl"><i data-ic="clock"></i>Tiempo encendido</div><div class="val num" id="kUp">–</div><div class="sub">Desde el último reinicio</div><div class="sub" id="kUpHint" style="margin-top:22px">&nbsp;</div></div>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <div class="ch"><h3>Mayor uso de memoria</h3><div class="right"><button class="btn sm ghost" data-go="processes">Ver procesos<i data-ic="chev"></i></button></div></div>
+          <table class="tbl mini"><tbody id="topMem"></tbody></table>
+        </div>
+        <div class="card">
+          <div class="ch"><h3>Mayor uso de procesador</h3><div class="right"><button class="btn sm ghost" data-go="processes">Ver procesos<i data-ic="chev"></i></button></div></div>
+          <table class="tbl mini"><tbody id="topCpu"></tbody></table>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="card"><div class="ch"><h3>Almacenamiento</h3></div><div class="cb" id="disks"></div></div>
+        <div class="card"><div class="ch"><h3>Acciones rápidas</h3></div>
+          <div class="cb quick">
+            <div class="qa" id="qaClean"><div class="qi"><i data-ic="zap"></i></div><div><b>Limpieza recomendada</b><span>Cierra procesos innecesarios en segundo plano.</span></div></div>
+            <div class="qa" id="qaExplorer"><div class="qi"><i data-ic="refresh"></i></div><div><b>Reiniciar Explorador</b><span>Soluciona barra de tareas o escritorio bloqueados.</span></div></div>
+            <div class="qa" data-go="unlock"><div class="qi"><i data-ic="unlock"></i></div><div><b>Eliminación forzada</b><span>Borra carpetas que Windows no deja eliminar.</span></div></div>
+            <div class="qa" data-go="search"><div class="qi"><i data-ic="search"></i></div><div><b>Buscar archivos</b><span>Encuentra cualquier archivo o carpeta del equipo.</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PROCESOS ================= -->
+  <section class="page" id="p-processes">
+    <div class="phead">
+      <div><h1>Procesos</h1><p>Analiza todo lo que se está ejecutando y cierra lo que no necesitas.</p></div>
+      <div class="acts">
+        <button class="btn" id="btnExplorer"><i data-ic="refresh"></i>Reiniciar Explorador</button>
+        <button class="btn primary" id="btnClean"><i data-ic="zap"></i>Limpieza recomendada <span class="count" id="cleanCount">0</span></button>
+      </div>
+    </div>
+    <div class="pbody flex">
+      <div class="toolbar">
+        <label class="search"><i data-ic="search"></i><input class="input" id="pFilter" placeholder="Buscar proceso o editor…" style="width:250px" spellcheck="false"></label>
+        <div class="seg" id="pSeg">
+          <button class="on" data-f="all">Todos<span class="n"></span></button>
+          <button data-f="bloat">Recomendado cerrar<span class="n"></span></button>
+          <button data-f="app">Aplicaciones<span class="n"></span></button>
+          <button data-f="background">Segundo plano<span class="n"></span></button>
+          <button data-f="hardware">Controladores<span class="n"></span></button>
+          <button data-f="system">Sistema<span class="n"></span></button>
+        </div>
+        <button class="btn ghost sm" id="pPause" title="Pausar la actualización automática" style="margin-left:auto"><i data-ic="pause"></i><span>Pausar</span></button>
+      </div>
+      <div class="card strip" id="pStrip">
+        <span>Procesador<b id="psCpu">–</b></span><span>Memoria<b id="psMem">–</b></span><span>Procesos<b id="psN">–</b></span><span>Liberable con la limpieza<b id="psFree">–</b></span>
+      </div>
+      <div class="bulk" id="pBulk"><span id="pBulkText"></span><button class="btn sm ghost" id="pBulkClear" style="margin-left:auto">Quitar selección</button><button class="btn sm danger" id="pBulkKill"><i data-ic="x"></i>Finalizar seleccionados</button></div>
+      <div class="tablewrap" id="pWrap">
+        <table class="tbl">
+          <colgroup><col style="width:44px"><col><col style="width:150px"><col style="width:110px"><col style="width:80px"><col style="width:200px"><col style="width:112px"></colgroup>
+          <thead><tr>
+            <th><input type="checkbox" class="check" id="pAll"></th>
+            <th class="sort" data-k="name">Nombre</th>
+            <th class="sort" data-k="cat">Estado</th>
+            <th class="sort r-right" data-k="ws">Memoria</th>
+            <th class="sort r-right" data-k="cpu">CPU</th>
+            <th class="sort" data-k="company">Editor</th>
+            <th></th>
+          </tr></thead>
+          <tbody id="pBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ELIMINACIÓN FORZADA ================= -->
+  <section class="page" id="p-unlock">
+    <div class="phead">
+      <div><h1>Eliminación forzada</h1><p>Elimina carpetas o archivos bloqueados finalizando primero los procesos que los usan.</p></div>
+    </div>
+    <div class="pbody">
+      <div class="steps">
+        <div class="card">
+          <div class="ch"><h3>1. Elemento a eliminar</h3><span class="sub">Carpeta o archivo</span></div>
+          <div class="cb">
+            <div class="pathrow">
+              <input class="input" id="uPath" placeholder="Pega una ruta, p. ej. C:\Users\Usuario\Downloads\carpeta" spellcheck="false">
+              <button class="btn" id="uPickDir"><i data-ic="folder"></i>Carpeta…</button>
+              <button class="btn" id="uPickFile"><i data-ic="file"></i>Archivo…</button>
+              <button class="btn primary" id="uAnalyze"><i data-ic="scan"></i>Analizar</button>
+            </div>
+            <p class="faint" style="margin:10px 0 0;font-size:12.5px">El análisis no cambia nada: solo muestra qué procesos están usando el contenido. Nada se elimina hasta que lo confirmes.</p>
+          </div>
+        </div>
+        <div class="card" id="uResult" style="display:none">
+          <div class="ch"><h3>2. Análisis</h3><span class="sub" id="uSub"></span><div class="right"><button class="btn sm ghost" id="uReanalyze"><i data-ic="refresh"></i>Volver a analizar</button></div></div>
+          <div class="cb">
+            <div class="stats" id="uStats"></div>
+            <div id="uProcs"></div>
+            <div class="optrow">
+              <label><input type="checkbox" class="check" id="uRecycle">Enviar a la Papelera de reciclaje en lugar de eliminar definitivamente</label>
+              <button class="btn danger" id="uDelete" style="margin-left:auto"><i data-ic="trash"></i><span>Finalizar procesos y eliminar</span></button>
+            </div>
+          </div>
+        </div>
+        <div id="uOutcome"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= BÚSQUEDA ================= -->
+  <section class="page" id="p-search">
+    <div class="phead">
+      <div><h1>Búsqueda de archivos</h1><p>Encuentra archivos y carpetas por su nombre en todas las unidades.</p></div>
+    </div>
+    <div class="pbody flex">
+      <div class="sbar">
+        <label class="search"><i data-ic="search"></i><input class="input" id="q" placeholder="Nombre del archivo o carpeta  (Enter para buscar)" autocomplete="off" spellcheck="false"></label>
+        <button class="btn primary" id="go">Buscar</button>
+      </div>
+      <div class="frow"><span class="flbl">Modo</span>
+        <div class="chips" id="modes">
+          <div class="chip on" data-m="contiene" title="El nombre contiene el texto en cualquier parte">Contiene</div>
+          <div class="chip" data-m="exacto" title="Nombre exacto (con o sin extensión)">Exacto</div>
+          <div class="chip" data-m="empieza" title="El nombre empieza por el texto">Empieza por</div>
+          <div class="chip" data-m="termina" title="El nombre termina en el texto">Termina en</div>
+          <div class="chip" data-m="palabras" title="Contiene todas las palabras, en cualquier orden">Todas las palabras</div>
+          <div class="chip" data-m="comodin" title="* = cualquier texto, ? = un carácter. Ej.: informe*2024*.pdf">Comodines <small>* ?</small></div>
+          <div class="chip" data-m="regex" title="Expresión regular">Regex</div>
+        </div>
+      </div>
+      <div class="frow"><span class="flbl">Tipo</span>
+        <div class="chips" id="types">
+          <div class="chip on" data-t="all">Archivos y carpetas</div>
+          <div class="chip" data-t="files"><i data-ic="file"></i>Solo archivos</div>
+          <div class="chip" data-t="dirs"><i data-ic="folder"></i>Solo carpetas</div>
+        </div>
+      </div>
+      <div class="frow"><span class="flbl">Dónde</span><div class="chips" id="drives"></div></div>
+      <details class="adv" id="adv">
+        <summary><i data-ic="chev"></i>Opciones avanzadas</summary>
+        <div class="inner">
+          <div class="opts">
+            <label class="ck"><input type="checkbox" class="check" id="optCase">Distinguir mayúsculas</label>
+            <label class="ck"><input type="checkbox" class="check" id="optAcc" checked>Ignorar tildes (canción = cancion)</label>
+            <label class="ck"><input type="checkbox" class="check" id="optHidden" checked>Incluir ocultos</label>
+            <label class="ck"><input type="checkbox" class="check" id="optSys">Omitir carpetas del sistema</label>
+          </div>
+          <div class="opts">
+            <label class="field">Extensiones <input class="input sm" id="optExt" placeholder="pdf, docx, mp4" style="width:170px"></label>
+            <label class="field">Excluir carpetas <input class="input sm" id="optExcl" placeholder="node_modules, .git" style="width:200px"></label>
+            <label class="field">Límite <input class="input sm" id="optLimit" type="number" min="100" max="500000" step="1000" value="10000" style="width:100px"></label>
+          </div>
+          <div class="opts">
+            <label class="field" style="flex:1">Carpeta concreta <input class="input sm" id="optFolder" placeholder="Si la rellenas, solo se busca dentro de esta ruta" style="flex:1;min-width:360px"></label>
+          </div>
+        </div>
+      </details>
+      <div class="sstatus">
+        <span class="dot" id="sDot"></span><span id="stText">Listo para buscar</span><span id="stCur"></span>
+        <label class="search"><i data-ic="filter"></i><input class="input sm" id="flt" placeholder="Filtrar resultados…" spellcheck="false" style="width:210px"></label>
+        <button class="btn sm" id="csv" title="Exportar resultados a CSV"><i data-ic="download"></i>CSV</button>
+      </div>
+      <div class="vtable">
+        <div class="vhead" id="vhead">
+          <div></div><div data-k="n">Nombre</div><div data-k="p">Ubicación</div><div data-k="s" style="text-align:right">Tamaño</div><div data-k="m">Modificado</div><div style="text-align:right;cursor:default">Acciones</div>
+        </div>
+        <div id="vlist">
+          <div id="vspacer"><div id="vrows"></div></div>
+          <div class="vempty" id="vempty"><div class="empty"><div class="ic"><i data-ic="search"></i></div><b>Busca cualquier archivo o carpeta</b>Escribe un nombre y pulsa <kbd>Enter</kbd>. Doble clic en un resultado para abrirlo.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= GUÍA ================= -->
+  <section class="page" id="p-guide">
+    <div class="phead"><div><h1>Guía de uso</h1><p>Qué hace cada herramienta y cómo usarla con seguridad.</p></div></div>
+    <div class="pbody" id="guideBody">
+      <div class="guide">
+        <nav class="toc" id="toc">
+          <a data-s="g-intro">Introducción</a>
+          <a data-s="g-overview">Resumen</a>
+          <a data-s="g-processes">Procesos</a>
+          <a data-s="g-clean">Limpieza recomendada</a>
+          <a data-s="g-unlock">Eliminación forzada</a>
+          <a data-s="g-search">Búsqueda de archivos</a>
+          <a data-s="g-admin">Modo administrador</a>
+          <a data-s="g-settings">Ajustes</a>
+          <a data-s="g-privacy">Seguridad y privacidad</a>
+          <a data-s="g-keys">Atajos de teclado</a>
+          <a data-s="g-faq">Preguntas frecuentes</a>
+        </nav>
+        <div class="doc">
+          <section id="g-intro">
+            <h2><span class="gi"><i data-ic="info"></i></span>Introducción</h2>
+            <p><strong>Vantix Utilities</strong> reúne en una sola aplicación varias herramientas de mantenimiento para Windows: supervisar el equipo, cerrar procesos innecesarios, eliminar carpetas bloqueadas y buscar archivos en todo el ordenador.</p>
+            <p>Todo funciona en tu propio equipo, sin conexión a Internet y sin instalar nada. La aplicación consume muy pocos recursos: solo recoge datos de la sección que tienes abierta y deja de trabajar cuando la ventana está minimizada. Al cerrar la ventana, la aplicación se cierra por completo.</p>
+          </section>
+
+          <section id="g-overview">
+            <h2><span class="gi"><i data-ic="grid"></i></span>Resumen</h2>
+            <p>Muestra el estado actual del equipo, actualizado cada pocos segundos:</p>
+            <ul>
+              <li><strong>Procesador:</strong> porcentaje de uso total de la CPU y su evolución reciente.</li>
+              <li><strong>Memoria:</strong> RAM en uso frente al total instalado. Por encima del 85 % el equipo puede ir lento.</li>
+              <li><strong>Procesos:</strong> número de programas en ejecución e hilos. La barra indica la <em>memoria comprometida</em> (RAM + archivo de paginación); si se acerca al 100 %, Windows avisará de memoria insuficiente.</li>
+              <li><strong>Tiempo encendido:</strong> tiempo desde el último reinicio. Si lleva muchos días, reiniciar suele mejorar el rendimiento.</li>
+              <li><strong>Mayor uso de memoria / procesador:</strong> los programas que más recursos consumen ahora mismo (agrupados por nombre).</li>
+              <li><strong>Almacenamiento:</strong> espacio ocupado y libre de cada disco. La barra se vuelve naranja por encima del 85 % y roja por encima del 95 %.</li>
+            </ul>
+          </section>
+
+          <section id="g-processes">
+            <h2><span class="gi"><i data-ic="activity"></i></span>Procesos</h2>
+            <p>Lista <strong>todos</strong> los procesos del equipo, agrupados por programa (por ejemplo, las 20 pestañas de un navegador aparecen como una sola fila con su recuento). Cada programa se clasifica automáticamente en un estado:</p>
+            <table>
+              <tr><th>Estado</th><th>Qué significa</th><th>¿Se puede cerrar?</th></tr>
+              <tr><td><span class="badge b-bloat">Innecesario</span></td><td>Actualizadores, informes de errores, telemetría, widgets, Xbox Game Bar, Enlace Móvil y similares funcionando en segundo plano.</td><td>Sí. Se incluyen en la limpieza recomendada.</td></tr>
+              <tr><td><span class="badge b-app">Aplicación</span></td><td>Programas con una ventana abierta (navegador, Discord, juegos…).</td><td>Sí, pero perderás lo que no hayas guardado. Nunca se cierran automáticamente.</td></tr>
+              <tr><td><span class="badge b-background">Segundo plano</span></td><td>Programas sin ventana: iconos de la bandeja, sincronización en la nube, lanzadores, asistentes.</td><td>Sí, si no los necesitas. Revisa antes de cerrarlos.</td></tr>
+              <tr><td><span class="badge b-hardware">Controlador</span></td><td>Software de hardware y periféricos: NVIDIA, AMD, Realtek, Logitech, Razer, tabletas gráficas…</td><td>Se puede, pero no se recomienda: podrías perder sonido, atajos o funciones del ratón/teclado.</td></tr>
+              <tr><td><span class="badge b-security">Seguridad</span></td><td>Antivirus y protección del sistema.</td><td>No. Está bloqueado.</td></tr>
+              <tr><td><span class="badge b-system">Sistema</span> <span class="badge b-service">Servicio</span></td><td>Componentes esenciales de Windows y servicios del sistema.</td><td>No. Está bloqueado para evitar cuelgues o reinicios.</td></tr>
+            </table>
+            <h4>Cómo usar la lista</h4>
+            <ul>
+              <li>Haz clic en una fila para ver los <strong>detalles</strong>: motivo de la clasificación, ruta del ejecutable, identificadores (PID) y acciones.</li>
+              <li>Usa los <strong>filtros</strong> superiores y el buscador para encontrar algo concreto. Haz clic en los encabezados para ordenar.</li>
+              <li>Marca varias filas con las casillas y pulsa <strong>Finalizar seleccionados</strong> para cerrarlas a la vez.</li>
+              <li>Desde los detalles puedes <strong>excluir</strong> un programa (la limpieza no lo tocará nunca) o marcarlo para <strong>cerrarlo siempre</strong> en la limpieza.</li>
+              <li><strong>Pausar</strong> detiene la actualización automática mientras revisas la lista.</li>
+              <li><strong>Reiniciar Explorador</strong> cierra y vuelve a abrir el Explorador de Windows. Útil si la barra de tareas, el menú Inicio o el escritorio se quedan bloqueados.</li>
+            </ul>
+            <p><strong>Memoria</strong> indica el conjunto de trabajo (RAM que usa el programa en este momento). En programas con muchos procesos la suma puede ser algo mayor que la del Administrador de tareas, porque parte de la memoria es compartida.</p>
+          </section>
+
+          <section id="g-clean">
+            <h2><span class="gi"><i data-ic="zap"></i></span>Limpieza recomendada</h2>
+            <p>Analiza todos los procesos y propone cerrar los que no son necesarios. Antes de cerrar nada muestra la lista completa con la memoria que se liberará, y puedes desmarcar lo que quieras conservar.</p>
+            <ul>
+              <li>Incluye los procesos en estado <strong>Innecesario</strong> y los que hayas marcado como <strong>cerrar siempre</strong>.</li>
+              <li>Opcionalmente (en Ajustes) puede incluir programas en segundo plano que superen un consumo de memoria que tú elijas.</li>
+              <li><strong>Nunca</strong> incluye aplicaciones con ventana, procesos del sistema, servicios, antivirus, controladores ni lo que hayas excluido.</li>
+            </ul>
+            <div class="alert info"><i data-ic="info"></i><div>Algunos programas se vuelven a abrir solos al cabo de un tiempo (por ejemplo, los actualizadores programados). Es normal: es Windows u otro programa quien los inicia. Para evitarlo de forma permanente, desactívalos en <em>Configuración › Aplicaciones › Inicio</em>.</div></div>
+          </section>
+
+          <section id="g-unlock">
+            <h2><span class="gi"><i data-ic="unlock"></i></span>Eliminación forzada</h2>
+            <p>Sirve para borrar carpetas o archivos que Windows no deja eliminar con mensajes como <em>«La acción no se puede completar porque el archivo está abierto en otro programa»</em>.</p>
+            <h4>Pasos</h4>
+            <ol>
+              <li>Elige la carpeta o el archivo con <strong>Carpeta…</strong> / <strong>Archivo…</strong>, o pega su ruta.</li>
+              <li>Pulsa <strong>Analizar</strong>. Verás cuántos elementos contiene, su tamaño y qué procesos lo bloquean, con el motivo de cada uno.</li>
+              <li>Revisa la lista y desmarca los procesos que no quieras finalizar.</li>
+              <li>Pulsa <strong>Finalizar procesos y eliminar</strong> y confirma. La aplicación finaliza los procesos marcados, quita los atributos de solo lectura y elimina el contenido (reintentando varias veces si algo tarda en liberarse).</li>
+            </ol>
+            <h4>Qué detecta</h4>
+            <ul>
+              <li>Procesos con <strong>archivos abiertos</strong> dentro de la carpeta (mediante el Administrador de reinicio de Windows).</li>
+              <li>Programas que <strong>se están ejecutando desde</strong> esa carpeta.</li>
+              <li>Ventanas de consola, terminales u otros programas que tienen la carpeta como <strong>directorio de trabajo</strong>.</li>
+            </ul>
+            <h4>Opciones y resultados</h4>
+            <ul>
+              <li><strong>Enviar a la Papelera:</strong> si lo marcas, el contenido se podrá recuperar. Si no, se elimina definitivamente.</li>
+              <li>Si el bloqueo lo causa el <strong>Explorador de Windows</strong>, se reinicia automáticamente (el escritorio parpadea un momento).</li>
+              <li>Si algún elemento sigue bloqueado (por ejemplo, por un servicio del sistema), puedes <strong>programar su eliminación al reiniciar</strong>: Windows lo borrará en el próximo arranque, antes de que nada lo pueda abrir. Requiere modo administrador.</li>
+            </ul>
+            <div class="alert warn"><i data-ic="alert"></i><div><b>Protecciones de seguridad</b>No se permite eliminar unidades completas, la carpeta de Windows, Archivos de programa, ProgramData, ni las carpetas principales de tu usuario (Escritorio, Documentos, Descargas…). Sí puedes eliminar cualquier carpeta concreta dentro de ellas.</div></div>
+          </section>
+
+          <section id="g-search">
+            <h2><span class="gi"><i data-ic="search"></i></span>Búsqueda de archivos</h2>
+            <p>Busca por nombre en todas las unidades a la vez, usando varios hilos en paralelo. Los resultados aparecen mientras busca y puedes detenerla en cualquier momento.</p>
+            <table>
+              <tr><th>Modo</th><th>Encuentra</th><th>Ejemplo</th></tr>
+              <tr><td>Contiene</td><td>El texto en cualquier parte del nombre.</td><td><span class="mono">informe</span> → Informe final.docx</td></tr>
+              <tr><td>Exacto</td><td>Nombre idéntico, con o sin extensión.</td><td><span class="mono">notas</span> → notas.txt</td></tr>
+              <tr><td>Empieza por</td><td>Nombres que empiezan por el texto.</td><td><span class="mono">IMG_</span> → IMG_2041.jpg</td></tr>
+              <tr><td>Termina en</td><td>Nombres que terminan en el texto.</td><td><span class="mono">final</span> → trabajo final.pdf</td></tr>
+              <tr><td>Todas las palabras</td><td>Todas las palabras, en cualquier orden.</td><td><span class="mono">física tema 4</span></td></tr>
+              <tr><td>Comodines</td><td><span class="mono">*</span> = cualquier texto, <span class="mono">?</span> = un carácter.</td><td><span class="mono">*2026*.pdf</span></td></tr>
+              <tr><td>Regex</td><td>Expresión regular avanzada.</td><td><span class="mono">^tema[0-9]+\.pdf$</span></td></tr>
+            </table>
+            <h4>Filtros y opciones</h4>
+            <ul>
+              <li><strong>Tipo:</strong> archivos, carpetas o ambos. <strong>Dónde:</strong> unidades a recorrer, o «Solo mi usuario».</li>
+              <li><strong>Opciones avanzadas:</strong> distinguir mayúsculas, ignorar tildes, incluir ocultos, omitir carpetas del sistema, filtrar por extensiones, excluir carpetas (p. ej. <span class="mono">node_modules</span>), límite de resultados y buscar solo en una carpeta concreta.</li>
+              <li>En los resultados: doble clic para <strong>abrir</strong>, botones para <strong>mostrar en su carpeta</strong> o <strong>copiar la ruta</strong>, y clic derecho para más opciones. Ordena por columna, filtra la lista y exporta a <strong>CSV</strong> (se abre en Excel).</li>
+            </ul>
+          </section>
+
+          <section id="g-admin">
+            <h2><span class="gi"><i data-ic="shield"></i></span>Modo administrador</h2>
+            <p>Por defecto la aplicación funciona con los permisos de tu usuario, que bastan para casi todo. Algunas acciones necesitan permisos de administrador:</p>
+            <ul>
+              <li>Finalizar procesos que se ejecutan como administrador o como servicio.</li>
+              <li>Eliminar archivos bloqueados por servicios del sistema.</li>
+              <li>Programar la eliminación al reiniciar.</li>
+            </ul>
+            <p>Pulsa <strong>Ejecutar como administrador</strong> en la barra lateral. Windows pedirá confirmación y la aplicación se reiniciará con permisos elevados sin cerrar la ventana. Cuando una acción falle por falta de permisos, la aplicación te lo indicará.</p>
+          </section>
+
+          <section id="g-settings">
+            <h2><span class="gi"><i data-ic="sliders"></i></span>Ajustes</h2>
+            <ul>
+              <li><strong>Pedir confirmación:</strong> muestra un aviso antes de finalizar procesos.</li>
+              <li><strong>Incluir procesos pesados:</strong> añade a la limpieza los programas en segundo plano que superen el límite de memoria que indiques.</li>
+              <li><strong>Frecuencia de actualización:</strong> cada cuántos segundos se refrescan el Resumen y los Procesos. Un valor mayor consume todavía menos.</li>
+              <li><strong>Exclusiones:</strong> programas que la limpieza nunca cerrará (por ejemplo, <span class="mono">onedrive.exe</span>).</li>
+              <li><strong>Cerrar siempre:</strong> programas que quieres incluir siempre en la limpieza.</li>
+            </ul>
+            <p>Los ajustes se guardan en <span class="mono">%APPDATA%\Vantix\config.json</span>.</p>
+          </section>
+
+          <section id="g-privacy">
+            <h2><span class="gi"><i data-ic="lock"></i></span>Seguridad y privacidad</h2>
+            <ul>
+              <li>La aplicación no se conecta a Internet ni envía ningún dato.</li>
+              <li>La interfaz solo es accesible desde tu propio equipo y está protegida con una clave aleatoria que cambia en cada inicio.</li>
+              <li>Antes de finalizar un proceso se comprueba que sigue siendo el mismo (Windows reutiliza los números de proceso).</li>
+              <li>Los procesos esenciales de Windows y los antivirus nunca se finalizan, ni siquiera de forma manual.</li>
+            </ul>
+          </section>
+
+          <section id="g-keys">
+            <h2><span class="gi"><i data-ic="keyboard"></i></span>Atajos de teclado</h2>
+            <table>
+              <tr><th>Atajo</th><th>Acción</th></tr>
+              <tr><td><kbd>Ctrl</kbd> + <kbd>1</kbd> … <kbd>4</kbd></td><td>Ir a Resumen, Procesos, Eliminación forzada o Búsqueda.</td></tr>
+              <tr><td><kbd>Ctrl</kbd> + <kbd>F</kbd></td><td>Ir al buscador de la sección actual.</td></tr>
+              <tr><td><kbd>F5</kbd></td><td>Actualizar la sección actual.</td></tr>
+              <tr><td><kbd>Enter</kbd></td><td>Buscar / abrir el resultado seleccionado.</td></tr>
+              <tr><td><kbd>↑</kbd> <kbd>↓</kbd></td><td>Moverse por los resultados de búsqueda.</td></tr>
+              <tr><td><kbd>Esc</kbd></td><td>Detener la búsqueda o cerrar un diálogo.</td></tr>
+            </table>
+          </section>
+
+          <section id="g-faq">
+            <h2><span class="gi"><i data-ic="help"></i></span>Preguntas frecuentes</h2>
+            <h4>¿Cerrar procesos acelera el ordenador?</h4>
+            <p>Libera memoria y procesador que estaban usando programas innecesarios, lo que ayuda sobre todo en equipos con poca RAM o al jugar. Windows ya gestiona bien la memoria, así que no hace falta hacerlo constantemente.</p>
+            <h4>He cerrado algo por error, ¿qué hago?</h4>
+            <p>Vuelve a abrir el programa normalmente. Si era un componente en segundo plano, se iniciará solo cuando se necesite o tras reiniciar el equipo.</p>
+            <h4>La carpeta sigue sin poder eliminarse</h4>
+            <p>Ejecuta la aplicación como administrador y repite el análisis. Si aun así queda algo, usa <strong>Programar eliminación al reiniciar</strong>.</p>
+            <h4>¿Por qué la ventana usa Microsoft Edge?</h4>
+            <p>La interfaz se muestra con el motor de Edge que ya incluye Windows, en una ventana independiente y con un perfil propio. Así la aplicación no necesita instalarse y ocupa muy poco.</p>
+          </section>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= AJUSTES ================= -->
+  <section class="page" id="p-settings">
+    <div class="phead"><div><h1>Ajustes</h1><p>Personaliza el comportamiento de la aplicación.</p></div></div>
+    <div class="pbody">
+      <div class="settings">
+        <div class="card">
+          <div class="ch"><h3>Procesos</h3></div>
+          <div class="srow"><div class="st"><b>Pedir confirmación antes de finalizar</b><span>Muestra un aviso antes de cerrar procesos desde la lista.</span></div><label class="switch"><input type="checkbox" id="sConfirm"><span></span></label></div>
+          <div class="srow"><div class="st"><b>Incluir procesos pesados en la limpieza</b><span>Añade programas en segundo plano (sin ventana) que superen este consumo de memoria.</span></div>
+            <input class="input sm num" id="sHeavyMB" type="number" min="50" max="16000" step="50" style="width:90px"><span class="faint">MB</span><label class="switch"><input type="checkbox" id="sHeavy"><span></span></label></div>
+          <div class="srow"><div class="st"><b>Frecuencia de actualización</b><span>Cada cuánto se refrescan el Resumen y la lista de procesos.</span></div>
+            <select class="input sm" id="sRefresh"><option value="2">2 segundos</option><option value="3">3 segundos</option><option value="5">5 segundos</option><option value="10">10 segundos</option></select></div>
+        </div>
+        <div class="card">
+          <div class="ch"><h3>Exclusiones</h3><span class="sub">La limpieza nunca cerrará estos programas</span></div>
+          <div class="cb"><div class="tags" id="tagsExcl"></div>
+            <div class="addrow"><input class="input sm" id="inExcl" placeholder="nombre.exe" style="width:260px" spellcheck="false"><button class="btn sm" id="addExcl"><i data-ic="plus"></i>Añadir</button></div></div>
+        </div>
+        <div class="card">
+          <div class="ch"><h3>Cerrar siempre</h3><span class="sub">Se incluyen siempre en la limpieza recomendada</span></div>
+          <div class="cb"><div class="tags" id="tagsAlways"></div>
+            <div class="addrow"><input class="input sm" id="inAlways" placeholder="nombre.exe" style="width:260px" spellcheck="false"><button class="btn sm" id="addAlways"><i data-ic="plus"></i>Añadir</button></div></div>
+        </div>
+        <div class="card">
+          <div class="ch"><h3>Búsqueda de archivos</h3></div>
+          <div class="srow"><div class="st"><b>Restablecer opciones de búsqueda</b><span>Vuelve a los valores iniciales de modo, unidades y opciones avanzadas.</span></div><button class="btn sm" id="sResetSearch">Restablecer</button></div>
+        </div>
+        <div class="card">
+          <div class="ch"><h3>Acerca de</h3></div>
+          <div class="srow"><div class="mark" style="width:40px;height:40px;border-radius:10px"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M3.5 5h4l4.5 11.5L16.5 5h4L14 20h-4z" fill="#fff"/></svg></div>
+            <div class="st"><b>Vantix Utilities <span class="faint" id="aboutVer"></span></b><span>Utilidades del sistema para Windows · HECHO POR @BYALVARO__</span></div></div>
+          <div class="srow"><div class="st"><b>Datos de la aplicación</b><span class="mono">%APPDATA%\Vantix · %LOCALAPPDATA%\Vantix</span></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div id="modalBg"></div>
+<div id="toasts"></div>
+<div id="ctx">
+  <div data-a="open"><i data-ic="external"></i>Abrir</div>
+  <div data-a="reveal"><i data-ic="folder"></i>Mostrar en su carpeta</div>
+  <div data-a="copy"><i data-ic="copy"></i>Copiar ruta completa</div>
+  <div data-a="copyname"><i data-ic="copy"></i>Copiar nombre</div>
+  <div data-a="copydir"><i data-ic="copy"></i>Copiar ruta de la carpeta</div>
+  <div data-a="unlock"><i data-ic="unlock"></i>Eliminación forzada…</div>
+</div>
+<div id="overlay"><div class="box"><div class="spin"></div><div id="overlayText" style="font-weight:600">Reconectando…</div><div class="faint" id="overlaySub" style="font-size:12.5px;margin-top:4px"></div></div></div>
+
+<script src="app.js"></script>
+</body>
+</html>
